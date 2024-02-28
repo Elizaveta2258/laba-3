@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.Scanner;
 
-class Quicksort {
+class MergeSort {
     public static void main(String[] args) {
         int[] array = new int[15];
         Scanner scanner = new Scanner(System.in);
@@ -22,46 +22,56 @@ class Quicksort {
             }
         }
         int[] result = Arrays.copyOf(array, n);
-        quicksort(result, 0, result.length - 1);
+        mergeSort(result, 0, result.length - 1);
         System.out.println("Упорядоченный массив: " + Arrays.toString(result));
     }
 
-    public static void quicksort(int[] result, int low, int high) {
-        if (result == null || result.length == 0)
-            return;
-
-        if (low >= high)//проверка завершения рекурсии
-            return;
-
-        int middle = low + (high - low) / 2;
-        int opora = result[middle];
-
-        int i = low, j = high;
-        while (i <= j) {
-            // выбор элементов больше или меньше опорного
-            while (result[i] < opora) {
-                i++;
-            }
-
-            while (result[j] > opora) {
-                j--;
-            }
-
-            if (i <= j) {
-                int temp = result[i];
-                result[i] = result[j];
-                result[j] = temp;
-                i++;
-                j--;
-            }
+    public static void mergeSort(int[] result, int left, int right) {
+        if (left < right) {
+            int mid = (left + right) / 2;
+            mergeSort(result, left, mid);
+            mergeSort(result, mid + 1, right);
+            merge(result, left, mid, right);
         }
-        // рекурсивный вызов для сортировки двух частей массива
-        if (low < j) {
-            quicksort(result, low, j);
+    }
+
+    public static void merge(int[] result, int left, int mid, int right) {
+        int leftSize = mid - left + 1;
+        int rightSize = right - mid;
+
+        int[] leftArr = new int[leftSize];
+        int[] rightArr = new int[rightSize];
+
+        for (int i = 0; i < leftSize; i++) {
+            leftArr[i] = result[left + i];
+        }
+        for (int j = 0; j < rightSize; j++) {
+            rightArr[j] = result[mid + 1 + j];
         }
 
-        if (high > i) {
-            quicksort(result, i, high);
+        int i = 0, j = 0, k = left;
+
+        while (i < leftSize && j < rightSize) {
+            if (leftArr[i] <= rightArr[j]) {
+                result[k] = leftArr[i];
+                i++;
+            } else {
+                result[k] = rightArr[j];
+                j++;
+            }
+            k++;
+        }
+
+        while (i < leftSize) {
+            result[k] = leftArr[i];
+            i++;
+            k++;
+        }
+
+        while (j < rightSize) {
+            result[k] = rightArr[j];
+            j++;
+            k++;
         }
     }
 }
